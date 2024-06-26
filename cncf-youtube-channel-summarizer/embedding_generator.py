@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer
 import pandas as pd
 import pickle
 def embedding_generator(model, data):
-    dataset = pd.read_csv('data/cncf_video_summary_combine.csv')
+   ## dataset = pd.read_csv('data/cncf_video_summary_combine.csv')
     bi_encoder = SentenceTransformer(model)
     bi_encoder.max_seq_length = 256     #Truncate long passages to 256 tokens
     ##### Semantic Search #####
