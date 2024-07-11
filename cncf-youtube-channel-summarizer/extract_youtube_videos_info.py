@@ -32,6 +32,7 @@ def get_video_id(youtube, playlist_id):
     video_ids = []
     video_titles = []
     video_desc = []
+    video_date = []
     next_page_token = None
     while True:
         playlist_response = youtube.playlistItems().list(playlistId=playlist_id, part='snippet', maxResults=50,
@@ -40,13 +41,14 @@ def get_video_id(youtube, playlist_id):
             video_ids.append(item['snippet']['resourceId']['videoId'])
             video_titles.append(item['snippet']['title'])
             video_desc.append(item['snippet']['description'])
+            video_date.append(item['snippet']['publishedAt'])
 
        # print(videos)
         next_page_token = playlist_response.get('nextPageToken')
         if next_page_token is None:
             break
 
-    return video_ids, video_titles, video_desc
+    return video_ids, video_titles, video_desc, video_date
 
 def get_video_caption(video_id):
     # List the available captions for the video
@@ -67,14 +69,13 @@ def get_video_info(youtube, CHANNEL_ID):
     for i in tqdm(range(0, len(playlists_id))):
         play_lists_dict[playlists_id[i]] = {'title': playlists_title[i], 'description': playlists_desc[i],
                                             'playlists_id': playlists_id[i]}
-        video_ids, video_titles, video_desc = get_video_id(youtube, playlists_id[i])
+        video_ids, video_titles, video_desc, video_date = get_video_id(youtube, playlists_id[i])
         for x in range(0, len(video_ids)):
             caption = get_video_caption(video_ids[x])
-
             videos_dict[video_ids[x]] = {'video_title': video_titles[x], 'video_description': video_desc[x],
-                                         'transcript': caption, 'play_list': play_lists_dict[playlists_id[i]]}
+                                         'transcript': caption, 'play_list': play_lists_dict[playlists_id[i]], 'published_date': video_date[x]}
 
-    with open("cncf-youtube-channel-summarizer/data/CNCF_video_information.json", "w") as outfile:
+    with open("cncf-youtube-channel-summarizer/data/CNCF_video_information_with_date.json", "w") as outfile:
         json.dump(videos_dict, outfile)
 
 if __name__ == "__main__":
