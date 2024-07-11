@@ -27,8 +27,10 @@ class BM25():
         video_ids = []
         for i in top_n_indices:
             results.append((self.dataset['merge'][i], scores[i]))
-            video_ids.append(self.dataset.loc[i]['video_id'])
-        print(results)
+            video_ids.append((self.dataset['merge'][i], scores[i]))
+            print(self.dataset['merge'][i], scores[i])
+            print('\n')
+            print('\n')
         return video_ids
 
 
@@ -67,12 +69,11 @@ class BIENCODER():
         return video_ids
 
 if __name__ == "__main__":
-    query = 'CNCF Webinars'  ## input query
+    query = 'healthcare and machine learning'  ## input query
     dataset = pd.read_csv('data/cncf_video_summary_combine.csv')
     print('Method 1: BM25 alg for semantic search:')
     bm25_search = BM25(dataset, top_k=5)
     video_ids = bm25_search.run(query)
-    print('here')
     print(video_ids)
 
     print('Method 2: Deep learning for semantic search:')
