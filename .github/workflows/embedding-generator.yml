@@ -1,0 +1,48 @@
+name: embedding-generator Pipline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'  # Specify the Python version you need
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r cncf-youtube-channel-summarizer/requirements.txt
+
+    - name: Generate embedding for semantic search
+      run: | 
+           python cncf-youtube-channel-summarizer/embedding_generator.py  
+
+    - name: Upload embedding for semantic search
+      uses: actions/upload-artifact@v4
+      with:
+        name: CNCF_video_information.json
+        path: cncf-youtube-channel-summarizer/data/embedding.pkl
+
+    - name: Commit Change for "embedding.pkl"
+      run: |
+          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
+          git config --global user.name "dependabot[bot]"
+          git add cncf-youtube-channel-summarizer/data/embedding.pkl|| exit 0
+          git commit -m "Add embedding for semantic search" --signoff || exit 0
+          git push
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
