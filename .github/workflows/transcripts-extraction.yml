@@ -36,14 +36,14 @@ jobs:
     - name: Upload transcript
       uses: actions/upload-artifact@v4
       with:
-        name: CNCF_video_information.json
-        path: cncf-youtube-channel-summarizer/data/CNCF_video_information.json
+        name: CNCF_video_information_with_date.json
+        path: cncf-youtube-channel-summarizer/data/CNCF_video_information_with_date.json
 
-    - name: Commit Change for "CNCF_video_information.json"
+    - name: Commit Change for "CNCF_video_information_with_date.json"
       run: |
           git config --global user.email "dependabot[bot]@users.noreply.github.com" 
           git config --global user.name "dependabot[bot]"
-          git add cncf-youtube-channel-summarizer/data/CNCF_video_information.json || exit 0
+          git add cncf-youtube-channel-summarizer/data/CNCF_video_information_with_date.json || exit 0
           git commit -m "Add Video Information" --signoff || exit 0
           git push
       env:
